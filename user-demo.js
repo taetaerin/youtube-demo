@@ -9,11 +9,45 @@ app.use(express.json())
 
 //로그인
 app.post('/login', function(req, res) {
-  // let {id, pwd} = req.body;
-  // res.json({
-  //   message: ""
-  // })
-})
+  //userId가 db에 저장된 회원인지 확인
+  let {userId, password} = req.body;
+  let loginUser = {};
+
+  db.forEach(function(user, id) {
+      if(user.userId == userId) {
+          loginUser = user
+      }
+  });
+  
+
+  if(isExist(loginUser)) {
+      console.log('입력하신 아이디를 찾았습니다.')
+      //password가 db에 저장된 회원인지 확인
+      if(loginUser.password == password) {
+        console.log('패스워드를 찾았습니다.')
+      }
+      else {
+        console.log('패스워드를 찾지 못했습니다.')
+      }
+  }
+  else {
+      console.log('입력하신 아이디는 없는 아이디입니다.')
+  }
+
+  res.json({
+    message: "."
+  })
+});
+
+
+function isExist(obj) {
+    if(Object.keys(obj).length) {
+      return true;
+    }
+    else {
+      return false;
+    }
+};
 
 //회원가입
 app.post('/join', function(req, res) {
@@ -31,7 +65,7 @@ app.post('/join', function(req, res) {
       message : `${db.get(id-1).name}님 환영합니다.`
     })
   }
-})
+});
 
 app
   .route('/users/:id')
@@ -77,4 +111,4 @@ app
 
 
 
-app.listen(3000)
+app.listen(3000);
